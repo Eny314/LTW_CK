@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <title>Thanh toán - Fruitables</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet"> 
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar Start -->
+    <!-- (Giữ nguyên phần navbar như các trang khác) -->
+    <!-- Navbar End -->
+
+    <!-- Checkout Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <h4 class="mb-4">Thông tin giao hàng</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Họ và tên *</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Số điện thoại *</label>
+                                <input type="tel" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Tỉnh/Thành phố *</label>
+                                <select class="form-control" required>
+                                    <option value="">Chọn tỉnh/thành phố</option>
+                                    <option value="HCM">TP. Hồ Chí Minh</option>
+                                    <option value="HN">Hà Nội</option>
+                                    <!-- Thêm các tỉnh thành khác -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Địa chỉ chi tiết *</label>
+                                <textarea class="form-control" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Ghi chú</label>
+                                <textarea class="form-control" rows="3" placeholder="Ghi chú về đơn hàng"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h4 class="mb-4">Thông tin đơn hàng</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá</th>
+                                    <th>Tổng</th>
+                                </tr>
+                            </thead>
+                            <tbody id="checkout-items">
+                                <!-- Items will be added here by JavaScript -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3"><strong>Tạm tính:</strong></td>
+                                    <td id="subtotal">0đ</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"><strong>Phí vận chuyển:</strong></td>
+                                    <td id="shipping">30.000đ</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"><strong>Tổng cộng:</strong></td>
+                                    <td id="total">0đ</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <h4 class="mb-4">Phương thức thanh toán</h4>
+                    <div class="payment-methods">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="payment" id="cod" checked>
+                            <label class="form-check-label" for="cod">
+                                Thanh toán khi nhận hàng (COD)
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="payment" id="bank">
+                            <label class="form-check-label" for="bank">
+                                Chuyển khoản ngân hàng
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="payment" id="momo">
+                            <label class="form-check-label" for="momo">
+                                Ví MoMo
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary w-100 mt-4" id="place-order">Đặt hàng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Checkout End -->
+
+    <!-- Footer Start -->
+    <!-- (Giữ nguyên phần footer như các trang khác) -->
+    <!-- Footer End -->
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Template / Common Scripts -->
+    <script src="../js/main.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="../js/cart.js"></script>
+    <script src="../js/checkout.js"></script>
+</body>
+</html>

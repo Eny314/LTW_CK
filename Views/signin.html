@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Đăng ký - Fruitables</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap" 
+          rel="stylesheet" media="print" onload="this.media='all'">
+
+    <!-- Critical CSS inline -->
+    <style>
+        /* Critical styles for above-the-fold content */
+        .spinner-border { display: none; }
+        .navbar { background: #fff; }
+    </style>
+
+    <!-- Non-critical CSS loaded asynchronously -->
+    <link rel="preload" href="/Views/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/Views/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+    <!-- Fallback for no JavaScript -->
+    <noscript>
+        <link href="/Views/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/Views/css/style.css" rel="stylesheet">
+    </noscript>
+
+    <!-- Icon Font Stylesheet - Load after page load -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" 
+          rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" 
+          rel="stylesheet" media="print" onload="this.media='all'">
+
+    <!-- Non-critical Libraries loaded after page load -->
+    <link href="/Views/lib/animate/animate.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <link href="/Views/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar Start -->
+    <div class="container-fluid fixed-top px-0 wow fadeIn" data-wow-delay="0.1s">
+        <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
+            <div class="col-lg-6 px-5 text-start">
+                <small><i class="fa fa-map-marker-alt me-2"></i>123 Street, New York, USA</small>
+                <small class="ms-4"><i class="fa fa-envelope me-2"></i>info@example.com</small>
+            </div>
+            <div class="col-lg-6 px-5 text-end">
+                <small>Follow us:</small>
+                <a class="text-body ms-3" href=""><i class="fab fa-facebook-f"></i></a>
+                <a class="text-body ms-3" href=""><i class="fab fa-twitter"></i></a>
+                <a class="text-body ms-3" href=""><i class="fab fa-linkedin-in"></i></a>
+                <a class="text-body ms-3" href=""><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
+            <a href="/Views/index.html" class="navbar-brand ms-4 ms-lg-0">
+                <h1 class="fw-bold text-primary m-0">F<span class="text-secondary">rui</span>tables</h1>
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="/Views/index.html" class="nav-item nav-link">Trang chủ</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+    <!-- Signin Form Start -->
+    <div class="container-fluid py-5 mt-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card shadow-lg border-0 rounded-lg mt-5">
+                        <div class="card-header">
+                            <h3 class="text-center font-weight-light my-4">Đăng ký tài khoản</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+                            <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+                            
+                            <form id="signinForm">
+                                <div class="form-floating mb-3">
+                                    <input class="form-control" id="fullName" type="text" placeholder="Họ và tên" required />
+                                    <label for="fullName">Họ và tên</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input class="form-control" id="email" type="email" placeholder="name@example.com" required />
+                                    <label for="email">Email address</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input class="form-control" id="password" type="password" placeholder="Password" 
+                                           required minlength="6" />
+                                    <label for="password">Mật khẩu</label>
+                                    <small class="form-text text-muted">Mật khẩu phải có ít nhất 6 ký tự</small>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input class="form-control" id="confirmPassword" type="password" 
+                                           placeholder="Confirm Password" required />
+                                    <label for="confirmPassword">Xác nhận mật khẩu</label>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" id="acceptTerms" type="checkbox" required />
+                                    <label class="form-check-label" for="acceptTerms">
+                                        Tôi đồng ý với <a href="#">điều khoản sử dụng</a>
+                                    </label>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                    <a class="small" href="/Views/login.html">Đã có tài khoản? Đăng nhập</a>
+                                    <button class="btn btn-primary" type="submit">Đăng ký</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Signin Form End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark footer pt-5 wow fadeIn" data-wow-delay="0.1s">
+        <!-- Footer content -->
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Tối ưu load script -->
+    <script>
+        // Tắt spinner ngay khi DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const spinner = document.getElementById('spinner');
+            if (spinner) {
+                spinner.classList.remove('show');
+            }
+        });
+    </script>
+
+    <!-- Load các script không cần thiết sau -->
+    <script defer src="/Views/lib/wow/wow.min.js"></script>
+    <script defer src="/Views/lib/easing/easing.min.js"></script>
+    <script defer src="/Views/lib/waypoints/waypoints.min.js"></script>
+    <script defer src="/Views/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script type="module" src="../Controllers/SigninController.js"></script>
+    <script>
+        // Kiểm tra navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Log để debug
+            console.log('Script loaded');
+            
+            // Thêm event listener cho các link
+            document.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    console.log('Clicking link:', this.href);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
