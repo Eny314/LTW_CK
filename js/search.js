@@ -21,6 +21,7 @@ function searchProductsFromInput(inputEl) {
     console.log('searchProductsFromInput called:', {value: raw, searchTerm, products: products.length});
 
     const termNorm = normalizeText(searchTerm);
+    const firstVisibleCandidates = [];
 
     products.forEach(product => {
         // defensively get name/price text
@@ -29,8 +30,14 @@ function searchProductsFromInput(inputEl) {
         const productName = nameEl ? (nameEl.textContent || '').toLowerCase() : '';
         const productPrice = priceEl ? (priceEl.textContent || '').toLowerCase() : '';
 
-    const productNameNorm = normalizeText(productName);
-    const productPriceNorm = normalizeText(productPrice);
+        // include additional sources: data-name on add-to-cart and image alt
+        const addBtn = product.querySelector('.add-to-cart');
+        const dataName = addBtn ? (addBtn.getAttribute('data-name') || '') : '';
+        const imgEl = product.querySelector('img');
+        const imgAlt = imgEl ? (imgEl.alt || '') : '';
+
+        const productNameNorm = normalizeText((productName + ' ' + dataName + ' ' + imgAlt).trim());
+        const productPriceNorm = normalizeText(productPrice);
 
         const visible = (!searchTerm || productNameNorm.includes(termNorm) || productPriceNorm.includes(termNorm));
         // show/hide the product card itself
@@ -40,7 +47,10 @@ function searchProductsFromInput(inputEl) {
         const colParent = product.closest('[class*="col-"]');
         if (colParent) colParent.style.display = visible ? '' : 'none';
 
-        if (visible) matched += 1;
+        if (visible) {
+            matched += 1;
+            firstVisibleCandidates.push(product);
+        }
     });
     // log summary so user can see behavior in console
     console.log('search run:', {term: searchTerm, termNorm: termNorm, total: products.length, matched});
@@ -63,6 +73,25 @@ function searchProductsFromInput(inputEl) {
         }
     } else {
         if (noResultsEl && noResultsEl.parentElement) noResultsEl.parentElement.removeChild(noResultsEl);
+
+        // auto-activate the tab containing the first match, then scroll and highlight
+        const first = firstVisibleCandidates[0];
+        if (first) {
+            const pane = first.closest('.tab-pane');
+            if (pane && !pane.classList.contains('show')) {
+                const sel = `[data-bs-target="#${pane.id}"], a[href="#${pane.id}"], button[data-bs-target="#${pane.id}"]`;
+                const trigger = document.querySelector(sel);
+                if (trigger) trigger.click();
+            }
+            setTimeout(() => {
+                try { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (_) {}
+                const oldOutline = first.style.outline;
+                const oldShadow = first.style.boxShadow;
+                first.style.outline = '3px solid #ffc107';
+                first.style.boxShadow = '0 0 0 4px rgba(255,193,7,0.35)';
+                setTimeout(() => { first.style.outline = oldOutline; first.style.boxShadow = oldShadow; }, 1500);
+            }, 250);
+        }
     }
 }
 

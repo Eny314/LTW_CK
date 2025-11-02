@@ -284,31 +284,7 @@ function addEventListenersToCartButtons() {
     });
 }
 
-// Thêm sản phẩm vào giỏ hàng khi bấm nút "Add to Cart"
-document.querySelectorAll(".add-to-cart").forEach(button => {
-    button.addEventListener("click", function (event) {
-        event.preventDefault();
-        
-        let name = this.getAttribute("data-name");
-        let price = this.getAttribute("data-price");
-
-        let productElement = this.closest(".fruite-item");
-        if (!productElement) {
-            console.error("Không tìm thấy phần tử sản phẩm!", this);
-            return;
-        }
-
-        let imageElement = productElement.querySelector(".fruite-img img");
-        if (!imageElement) {
-            console.error("Không tìm thấy ảnh sản phẩm!", this);
-            return;
-        }
-        let image = imageElement.src;
-
-        addToCart(name, price, image);
-        updateCartCount();
-    });
-});
+// Gỡ bỏ xử lý thêm sản phẩm trùng (đã có trong js/cart.js). Tránh click 1 lần mà thêm 2 lần / hiện 2 alert.
 
 // Khi trang tải lại, khôi phục giỏ hàng từ localStorage
 document.addEventListener("DOMContentLoaded", function () {

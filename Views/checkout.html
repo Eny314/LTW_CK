@@ -33,6 +33,11 @@
     <!-- Checkout Start -->
     <div class="container-fluid py-5">
         <div class="container py-5">
+            <div class="mb-4">
+                <a href="cart.html" class="btn btn-outline-primary rounded-pill px-4 py-2">
+                    <i class="fa fa-arrow-left me-2"></i>Quay lại giỏ hàng
+                </a>
+            </div>
             <div class="row g-5">
                 <div class="col-lg-6">
                     <h4 class="mb-4">Thông tin giao hàng</h4>
@@ -58,11 +63,25 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Tỉnh/Thành phố *</label>
-                                <select class="form-control" required>
+                                <select id="city-select" class="form-control" required>
                                     <option value="">Chọn tỉnh/thành phố</option>
                                     <option value="HCM">TP. Hồ Chí Minh</option>
-                                    <option value="HN">Hà Nội</option>
-                                    <!-- Thêm các tỉnh thành khác -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Quận/Huyện <span class="text-muted small">(bắt buộc khi chọn TP.HCM)</span></label>
+                                <select id="district-select" class="form-control" disabled>
+                                    <option value="">Chọn quận/huyện</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Phường/Xã <span class="text-muted small">(bắt buộc khi đã chọn Quận/Huyện)</span></label>
+                                <select id="ward-select" class="form-control" disabled>
+                                    <option value="">Chọn phường/xã</option>
                                 </select>
                             </div>
                         </div>
@@ -134,6 +153,32 @@
                         </div>
                     </div>
 
+                    <!-- Bank transfer details with VietQR -->
+                    <div id="bank-transfer-box" class="card border-0 shadow-sm p-3 d-none">
+                        <h5 class="mb-2">Quét mã để chuyển khoản</h5>
+                        <p class="mb-1 small text-muted">Ngân hàng và nội dung chuyển khoản</p>
+                        <div class="row g-3 align-items-center">
+                            <div class="col-sm-6">
+                                <ul class="list-unstyled mb-2 small">
+                                    <li><strong>Ngân hàng:</strong> <span id="qr-bank-name">Vietcombank (VCB)</span></li>
+                                    <li><strong>Số tài khoản:</strong> <span id="qr-account">0123456789</span></li>
+                                    <li><strong>Chủ tài khoản:</strong> <span id="qr-account-name">NGUYEN VAN A</span></li>
+                                    <li><strong>Số tiền:</strong> <span id="qr-amount">0đ</span></li>
+                                    <li><strong>Nội dung:</strong> <span id="qr-memo">ORDER-xxxx</span></li>
+                                </ul>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-copy-memo">Sao chép nội dung</button>
+                                    <a id="btn-download-qr" class="btn btn-outline-primary btn-sm" download="vietqr.png">Tải QR</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 text-center">
+                                <img id="vietqr-img" alt="VietQR" class="img-fluid rounded border" style="max-width: 220px;" onerror="this.style.display='none';document.getElementById('qr-fallback').style.display='inline-block'">
+                                <div id="qr-fallback" class="d-none mt-2"></div>
+                                <div class="small text-muted mt-2">Nếu ảnh QR không hiện, dùng QR dự phòng hoặc kiểm tra kết nối mạng.</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <button class="btn btn-primary w-100 mt-4" id="place-order">Đặt hàng</button>
                 </div>
             </div>
@@ -154,6 +199,8 @@
 
     <!-- Custom Scripts -->
     <script src="../js/cart.js"></script>
+    <!-- Lightweight QR code generator for fallback (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="../js/checkout.js"></script>
 </body>
 </html>
