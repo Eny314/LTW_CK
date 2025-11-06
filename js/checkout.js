@@ -17,12 +17,7 @@ function displayCheckoutItems() {
         
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>
-                <div class="d-flex align-items-center">
-                    <img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover;">
-                    <span class="ms-2">${item.name}</span>
-                </div>
-            </td>
+            <td>${item.name}</td>
             <td>${item.quantity}</td>
             <td>${formatCurrency(item.price)}</td>
             <td>${formatCurrency(total)}</td>

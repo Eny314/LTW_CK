@@ -1,5 +1,56 @@
-// Generalized product search function. Accepts an input element (so multiple inputs can trigger it).
-function searchProductsFromInput(inputEl) {
+// Helper: collect product cards on the current page
+function collectProducts() {
+    const cards = Array.from(document.querySelectorAll('.fruite-item'));
+    return cards.map(card => {
+        const nameEl = card.querySelector('h4');
+        const addBtn = card.querySelector('.add-to-cart');
+        const imgEl = card.querySelector('img');
+        const linkEl = card.querySelector('.fruite-img a') || card.querySelector('a');
+        const priceTextEl = card.querySelector('.text-dark');
+        const name = (nameEl ? nameEl.textContent : (addBtn ? addBtn.getAttribute('data-name') : '') || '').trim();
+        const priceText = priceTextEl ? priceTextEl.textContent.trim() : '';
+        const priceNum = parseInt((priceText || '').replace(/[^\d]/g, '')) || 0;
+        const imgSrc = imgEl ? imgEl.getAttribute('src') || '' : '';
+        const imgFile = imgSrc.split('/').pop();
+        const tabPane = card.closest('.tab-pane');
+        // Prefer existing link if present
+        let href = linkEl && linkEl.getAttribute('href');
+        if (!href || href === '#') {
+            // Build a detail link using query params; product-detail.js will resolve img path
+            const params = new URLSearchParams();
+            if (name) params.set('name', name);
+            if (priceNum) params.set('price', String(priceNum));
+            if (imgFile) params.set('img', imgFile);
+            href = `shop-detail.html?${params.toString()}`;
+        }
+        return { el: card, name, priceText, priceNum, imgSrc, imgFile, href, tabId: tabPane ? tabPane.id : null };
+    });
+}
+
+// Helper: render results into the modal dropdown list
+function renderSearchResults(matches) {
+    const resultsEl = document.getElementById('search-results');
+    if (!resultsEl) return;
+    if (!matches || matches.length === 0) {
+        resultsEl.style.display = 'none';
+        resultsEl.innerHTML = '';
+        return;
+    }
+    const top = matches.slice(0, 8);
+    resultsEl.innerHTML = top.map(m => `
+        <a href="${m.href}" class="d-flex align-items-center text-decoration-none text-dark py-2 px-2 rounded-2 hover-bg">
+            <img src="${m.imgSrc}" alt="${m.name}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;margin-right:10px;">
+            <div>
+                <div style="font-weight:600;">${m.name}</div>
+                <div style="font-size:12px;color:#6c757d;">${m.priceText || ''}</div>
+            </div>
+        </a>
+    `).join('');
+    resultsEl.style.display = 'block';
+}
+
+// Generalized product search function. Accepts an input element and a submit flag.
+function searchProductsFromInput(inputEl, submit = false) {
     if (!inputEl) return;
     const raw = (inputEl.value || '');
     const searchTerm = raw.toLowerCase();
@@ -13,8 +64,9 @@ function searchProductsFromInput(inputEl) {
         }
     }
 
-    // Select all product items (if none exist on the page, nothing happens)
-    const products = document.querySelectorAll('.fruite-item');
+    // Collect product cards
+    const productObjs = collectProducts();
+    const products = productObjs.map(p => p.el);
     let matched = 0;
 
     // Visible diagnostic log so user can see search was triggered
@@ -23,20 +75,17 @@ function searchProductsFromInput(inputEl) {
     const termNorm = normalizeText(searchTerm);
     const firstVisibleCandidates = [];
 
-    products.forEach(product => {
-        // defensively get name/price text
+    const matches = [];
+    products.forEach((product, idx) => {
+        const p = productObjs[idx];
         const nameEl = product.querySelector('h4');
+        const productName = nameEl ? (nameEl.textContent || '').toLowerCase() : (p.name || '').toLowerCase();
         const priceEl = product.querySelector('.text-dark');
-        const productName = nameEl ? (nameEl.textContent || '').toLowerCase() : '';
-        const productPrice = priceEl ? (priceEl.textContent || '').toLowerCase() : '';
-
-        // include additional sources: data-name on add-to-cart and image alt
-        const addBtn = product.querySelector('.add-to-cart');
-        const dataName = addBtn ? (addBtn.getAttribute('data-name') || '') : '';
+        const productPrice = priceEl ? (priceEl.textContent || '').toLowerCase() : (p.priceText || '').toLowerCase();
         const imgEl = product.querySelector('img');
         const imgAlt = imgEl ? (imgEl.alt || '') : '';
 
-        const productNameNorm = normalizeText((productName + ' ' + dataName + ' ' + imgAlt).trim());
+        const productNameNorm = normalizeText((productName + ' ' + imgAlt).trim());
         const productPriceNorm = normalizeText(productPrice);
 
         const visible = (!searchTerm || productNameNorm.includes(termNorm) || productPriceNorm.includes(termNorm));
@@ -50,6 +99,7 @@ function searchProductsFromInput(inputEl) {
         if (visible) {
             matched += 1;
             firstVisibleCandidates.push(product);
+            matches.push(p);
         }
     });
     // log summary so user can see behavior in console
@@ -93,6 +143,29 @@ function searchProductsFromInput(inputEl) {
             }, 250);
         }
     }
+
+    // If input is inside the modal, show results there
+    const inModal = !!inputEl.closest('#searchModal');
+    if (inModal) {
+        renderSearchResults(matches);
+    }
+
+    // If there are no product cards on this page and this is a submit action,
+    // handle shop-detail inline featured results if available; otherwise redirect to index with q
+    if (submit && products.length === 0) {
+        const term = raw.trim();
+        const isDetail = window.location.pathname.includes('shop-detail.html');
+        const canInline = typeof window.renderFeaturedSearchResults === 'function';
+        if (isDetail && canInline) {
+            window.renderFeaturedSearchResults(term);
+            const modal = document.getElementById('searchModal');
+            if (modal) {
+                try { new bootstrap.Modal(modal).hide(); } catch(_) {}
+            }
+        } else if (term) {
+            window.location.href = `index.html?q=${encodeURIComponent(term)}`;
+        }
+    }
 }
 
 // Attach listeners to all search inputs and their matching icons when DOM is ready.
@@ -103,14 +176,14 @@ document.addEventListener('DOMContentLoaded', function() {
     searchInputs.forEach(input => {
         // live search on input
         input.addEventListener('input', function() {
-            searchProductsFromInput(input);
+            searchProductsFromInput(input, false);
         });
 
         // Enter key
         input.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                searchProductsFromInput(input);
+                searchProductsFromInput(input, true);
             }
         });
 
@@ -120,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const iconSpan = parent.querySelector('.input-group-text');
             if (iconSpan) {
                 iconSpan.addEventListener('click', function() {
-                    searchProductsFromInput(input);
+                    searchProductsFromInput(input, true);
                 });
             }
         }
@@ -131,7 +204,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const heroInput = document.getElementById('hero-search-input');
     if (heroBtn && heroInput) {
         heroBtn.addEventListener('click', function() {
-            searchProductsFromInput(heroInput);
+            searchProductsFromInput(heroInput, true);
+        });
+    }
+
+    // If URL contains ?q=term, prefill main search and run filter on index
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    if (q && heroInput) {
+        heroInput.value = q;
+        searchProductsFromInput(heroInput, true);
+    }
+
+    // Hide modal results on modal close
+    const searchModal = document.getElementById('searchModal');
+    if (searchModal) {
+        searchModal.addEventListener('hidden.bs.modal', function(){
+            const resultsEl = document.getElementById('search-results');
+            if (resultsEl) { resultsEl.style.display = 'none'; resultsEl.innerHTML = ''; }
         });
     }
 });

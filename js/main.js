@@ -321,68 +321,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOM đã tải xong!");
-
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-
-    if (window.location.pathname.includes("shop-detail.html")) {
-        console.log("🔍 Đang ở trang shop-detail.html");
-
-        const productName = getQueryParam("name") || "Sản phẩm không xác định";
-        let productPrice = getQueryParam("price") || "0";
-        let productImg = getQueryParam("img") || "default.jpg"; // Tránh lỗi đường dẫn
-
-        // ✅ Sửa đường dẫn hình ảnh
-        if (!productImg.startsWith("assets/img/")) {
-            productImg = "assets/img/" + productImg;
-        }
-
-        // ✅ Chuẩn hóa giá tiền (loại bỏ ký tự lạ, chỉ giữ số)
-        productPrice = productPrice.replace(/[^\d]/g, "") + "đ";
-
-        console.log("📌 Tên sản phẩm:", productName);
-        console.log("💰 Giá sản phẩm:", productPrice);
-        console.log("🖼 Ảnh sản phẩm:", productImg);
-
-        const productImage = document.querySelector(".product-image");
-        const productTitle = document.querySelector(".product-name");
-        const productPriceTag = document.querySelector(".product-price");
-
-        if (productImage) productImage.src = productImg;
-        if (productTitle) productTitle.innerText = productName;
-        if (productPriceTag) productPriceTag.innerText = productPrice;
-
-        // 🛒 Xử lý thêm sản phẩm vào giỏ hàng
-        const addToCartBtn = document.querySelector(".btn-add-to-cart");
-        if (addToCartBtn) {
-            addToCartBtn.addEventListener("click", function () {
-                let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-                // Kiểm tra sản phẩm đã tồn tại chưa
-                let existingItem = cart.find(item => item.name === productName);
-                if (existingItem) {
-                    existingItem.quantity++;
-                } else {
-                    cart.push({
-                        name: productName,
-                        price: parseInt(productPrice), // Đảm bảo kiểu số
-                        image: productImg,
-                        quantity: 1
-                    });
-                }
-
-                // Lưu giỏ hàng vào localStorage
-                localStorage.setItem("cart", JSON.stringify(cart));
-
-                alert(`✅ Đã thêm "${productName}" vào giỏ hàng!`);
-            });
-        }
-    }
-});
+// shop-detail page logic is handled in js/product-detail.js to avoid duplicate bindings
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -540,37 +479,125 @@ document.addEventListener("DOMContentLoaded", function () {
     let recommendations = generateRecommendations(frequentItems, transactions, 2);
 });
 
-// 🔹 Dữ liệu sản phẩm
-const productData = {
-    "Đậu bắp": { img: "assets/img/vegetable-item-7.jpg", price: "12.000đ" },
-    "Bắp chuối": { img: "assets/img/vegetable-item-8.jpg", price: "20.000đ" },
-    "Khoai tây": { img: "assets/img/vegetable-item-9.jpg", price: "25.000đ" },
-    "Bí đỏ": { img: "assets/img/vegetable-item-10.jpg", price: "10.000đ" },
-    "Ớt chuông": { img: "assets/img/vegetable-item-11.jpg", price: "18.000đ" },
-    "Cà tím": { img: "assets/img/vegetable-item-12.jpg", price: "9.000đ" },
-    "Củ dền": { img: "assets/img/vegetable-item-13.jpg", price: "14.000đ" },
-    "Củ cải trắng": { img: "assets/img/vegetable-item-14.jpg", price: "22.000đ" },
-    "Cà chua": { img: "assets/img/vegetable-item-15.jpg", price: "12.000đ" },
-    "Hành baro": { img: "assets/img/vegetable-item-16.jpg", price: "10.000đ" },
-    "Cà pháo": { img: "assets/img/vegetable-item-17.jpg", price: "55.000đ" },
-    "Dưa chuột": { img: "assets/img/vegetable-item-18.jpg", price: "30.000đ" },
-    "Cải xanh": { img: "assets/img/vegetable-item-19.jpg", price: "35.000đ" },
-    "Bắp": { img: "assets/img/vegetable-item-20.jpg", price: "12.000đ" },
-    "Đậu cô ve": { img: "assets/img/vegetable-item-21.jpg", price: "20.000đ" },
-    "Mướp": { img: "assets/img/vegetable-item-22.png", price: "18.000đ" },
-    "Măng cụt": { img: "assets/img/fruite-item-17.jpg", price: "9.000đ" },
-    "Kiwi": { img: "assets/img/fruite-item-18.jpg", price: "30.000đ" },
-    "Nho": { img: "assets/img/fruite-item-7.jpg", price: "89.500đ" },
-    "Vải": { img: "assets/img/fruite-item-8.jpg", price: "45.000đ" },
-    "Dứa": { img: "assets/img/fruite-item-9.jpg", price: "23.000đ" },
-    "Chôm chôm": { img: "assets/img/fruite-item-10.jpg", price: "35.000đ" },
-    "Mâm xôi": { img: "assets/img/fruite-item-11.jpg", price: "15.000đ" },
-    "Đào": { img: "assets/img/fruite-item-12.jpg", price: "85.000đ" },
-    "Lê": { img: "assets/img/fruite-item-13.jpg", price: "55.000đ" },
-    "Ổi": { img: "assets/img/fruite-item-14.jpg", price: "35.000đ" },
-    "Chuối": { img: "assets/img/fruite-item-15.jpg", price: "30.000đ" },
-    "Khế": { img: "assets/img/fruite-item-16.jpg", price: "23.000đ" }
-};
+// 🔹 Dữ liệu sản phẩm - tự động quét từ DOM khi ở trang index, fallback static nếu không có
+let productData = {};
+
+// Build productData from index.html product cards
+function buildProductDataFromDOM() {
+    const cards = Array.from(document.querySelectorAll('.fruite-item'));
+    const data = {};
+    cards.forEach(card => {
+        const nameEl = card.querySelector('h4');
+        const priceEl = card.querySelector('.text-dark.fs-5.fw-bold');
+        const imgEl = card.querySelector('img');
+        const linkEl = card.querySelector('.fruite-img a');
+        const addBtn = card.querySelector('.add-to-cart');
+        
+        if (!nameEl) return;
+        const name = nameEl.textContent.trim();
+        
+        // Get price: prefer from add-to-cart data-price (clean number), fallback to display text
+        let priceText = '';
+        if (addBtn && addBtn.getAttribute('data-price')) {
+            const rawPrice = addBtn.getAttribute('data-price');
+            const cleanPrice = parseInt(String(rawPrice).replace(/[^\d]/g, '')) || 0;
+            priceText = new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(cleanPrice).replace(/\s/g, '');
+        } else if (priceEl) {
+            priceText = priceEl.textContent.trim();
+        }
+        
+        const imgSrc = imgEl ? imgEl.getAttribute('src') : '';
+        
+        // Extract image filename/path: prefer query param, fallback to src
+        let imgPath = imgSrc;
+        if (linkEl && linkEl.href) {
+            try {
+                const url = new URL(linkEl.href, window.location.origin);
+                const imgParam = url.searchParams.get('img');
+                if (imgParam) imgPath = imgParam.includes('/') ? imgParam : 'assets/img/' + imgParam;
+            } catch (_) {}
+        }
+        // Normalize: strip leading ../ or /Models/ to store as 'assets/img/...'
+        imgPath = imgPath.replace(/^\.\.\/Models\//, '').replace(/^\/Models\//, '');
+        
+        // Store both formatted price and raw numeric price
+        data[name] = { 
+            img: imgPath, 
+            price: priceText,
+            rawPrice: rawPrice  // Keep raw numeric value for URL params
+        };
+    });
+    return data;
+}
+
+// Initialize productData: build from DOM if on index, else load from localStorage, else use static fallback
+if (document.querySelectorAll('.fruite-item').length > 0) {
+    productData = buildProductDataFromDOM();
+    // Save to localStorage so other pages can use it
+    try {
+        localStorage.setItem('productData', JSON.stringify(productData));
+        console.log('✅ productData built from DOM and saved to localStorage:', Object.keys(productData).length, 'products');
+    } catch (e) {
+        console.warn('Failed to save productData to localStorage:', e);
+    }
+} else {
+    // Try loading from localStorage first
+    try {
+        const cached = localStorage.getItem('productData');
+        if (cached) {
+            productData = JSON.parse(cached);
+            console.log('✅ productData loaded from localStorage:', Object.keys(productData).length, 'products');
+        }
+    } catch (e) {
+        console.warn('Failed to load productData from localStorage:', e);
+    }
+}
+// Fallback static data if both DOM and localStorage are empty - formatted with VND currency
+if (Object.keys(productData).length === 0) {
+    productData = {
+        "Đậu bắp": { img: "assets/img/vegetable-item-7.jpg", price: "12.000₫", rawPrice: 12000 },
+        "Bắp chuối": { img: "assets/img/vegetable-item-8.jpg", price: "20.000₫", rawPrice: 20000 },
+        "Khoai tây": { img: "assets/img/vegetable-item-9.jpg", price: "25.000₫", rawPrice: 25000 },
+        "Bí đỏ": { img: "assets/img/vegetable-item-10.jpg", price: "10.000₫", rawPrice: 10000 },
+        "Ớt chuông": { img: "assets/img/vegetable-item-11.jpg", price: "18.000₫", rawPrice: 18000 },
+        "Cà tím": { img: "assets/img/vegetable-item-12.jpg", price: "9.000₫", rawPrice: 9000 },
+        "Củ dền": { img: "assets/img/vegetable-item-13.jpg", price: "14.000₫", rawPrice: 14000 },
+        "Củ cải trắng": { img: "assets/img/vegetable-item-14.jpg", price: "22.000₫", rawPrice: 22000 },
+        "Cà chua": { img: "assets/img/vegetable-item-15.jpg", price: "12.000₫", rawPrice: 12000 },
+        "Hành baro": { img: "assets/img/vegetable-item-16.jpg", price: "10.000₫", rawPrice: 10000 },
+        "Cà pháo": { img: "assets/img/vegetable-item-17.jpg", price: "55.000₫", rawPrice: 55000 },
+        "Dưa chuột": { img: "assets/img/vegetable-item-18.jpg", price: "30.000₫", rawPrice: 30000 },
+        "Cải xanh": { img: "assets/img/vegetable-item-19.jpg", price: "35.000₫", rawPrice: 35000 },
+        "Bắp": { img: "assets/img/vegetable-item-20.jpg", price: "12.000₫", rawPrice: 12000 },
+        "Đậu cô ve": { img: "assets/img/vegetable-item-21.jpg", price: "20.000₫", rawPrice: 20000 },
+        "Mướp": { img: "assets/img/vegetable-item-22.png", price: "18.000₫", rawPrice: 18000 },
+        "Măng cụt": { img: "assets/img/fruite-item-17.jpg", price: "9.000₫", rawPrice: 9000 },
+        "Kiwi": { img: "assets/img/fruite-item-18.jpg", price: "30.000₫", rawPrice: 30000 },
+        "Nho": { img: "assets/img/fruite-item-7.jpg", price: "89.500₫", rawPrice: 89500 },
+        "Vải": { img: "assets/img/fruite-item-8.jpg", price: "45.000₫", rawPrice: 45000 },
+        "Dứa": { img: "assets/img/fruite-item-9.jpg", price: "23.000₫", rawPrice: 23000 },
+        "Chôm chôm": { img: "assets/img/fruite-item-10.jpg", price: "35.000₫", rawPrice: 35000 },
+        "Mâm xôi": { img: "assets/img/fruite-item-11.jpg", price: "15.000₫", rawPrice: 15000 },
+        "Đào": { img: "assets/img/fruite-item-12.jpg", price: "85.000₫", rawPrice: 85000 },
+        "Lê": { img: "assets/img/fruite-item-13.jpg", price: "55.000₫", rawPrice: 55000 },
+        "Ổi": { img: "assets/img/fruite-item-14.jpg", price: "35.000₫", rawPrice: 35000 },
+        "Chuối": { img: "assets/img/fruite-item-15.jpg", price: "30.000₫", rawPrice: 30000 },
+        "Khế": { img: "assets/img/fruite-item-16.jpg", price: "23.000₫", rawPrice: 23000 }
+    };
+}
+
+// Expose productData globally for other scripts (e.g., featured.js)
+try { window.productData = productData; } catch (_) {}
+
+// Resolve image path to be correct from Views/*.html context
+function resolveAssetPathForView(imgPath) {
+    if (!imgPath) return '';
+    if (/^https?:\/\//.test(imgPath)) return imgPath;
+    if (imgPath.includes('Models/assets/img') || imgPath.startsWith('../')) return imgPath;
+    if (imgPath.startsWith('assets/')) return '../Models/' + imgPath.replace(/^\/?/, '');
+    const file = imgPath.split('/').pop();
+    return '../Models/assets/img/' + file;
+}
 
 // 🔹 Hiển thị gợi ý sản phẩm trên shop-detail.html
 document.addEventListener("DOMContentLoaded", function () {
@@ -591,28 +618,36 @@ document.addEventListener("DOMContentLoaded", function () {
         container.innerHTML = ""; // Xóa danh sách cũ
 
         if (suggestedProducts.length === 0) {
-            suggestedProducts = Object.keys(productData).slice(0, 5); // Hiển thị sản phẩm bán chạy nếu không có gợi ý
+            // Show ALL products from productData if no recommendations
+            suggestedProducts = Object.keys(productData);
         }
 
         suggestedProducts.forEach(product => {
             let productInfo = productData[product];
+            const displayImg = resolveAssetPathForView(productInfo.img);
+            const file = (productInfo.img || '').split('/').pop();
+            // Use rawPrice for URL param (numeric value), fallback to trying to parse price if rawPrice missing
+            const priceParam = productInfo.rawPrice || parseInt(String(productInfo.price).replace(/\D/g, '')) || 0;
 
+            const detailUrl = `shop-detail.html?name=${encodeURIComponent(product)}&img=${encodeURIComponent(file)}&price=${encodeURIComponent(priceParam)}`;
             let productHTML = `
-                <div class="border border-primary rounded position-relative vesitable-item">
-                    <div class="vesitable-img">
-                        <img src="${productInfo.img}" class="img-fluid w-100 rounded-top" alt="${product}">
-                    </div>
-                    <div class="p-4 pb-0 rounded-bottom">
-                        <h4>${product}</h4>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
-                        <div class="d-flex justify-content-between flex-lg-wrap">
-                            <p class="text-dark fs-5 fw-bold">${productInfo.price}</p>
-                            <a href="shop-detail.html?name=${encodeURIComponent(product)}&img=${encodeURIComponent(productInfo.img)}&price=${encodeURIComponent(productInfo.price)}" class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary">
-                                <i class="fa fa-shopping-bag me-2 text-primary"></i> View Details
-                            </a>
+                <a href="${detailUrl}" class="text-decoration-none" style="color: inherit; display: block;">
+                    <div class="border border-primary rounded position-relative vesitable-item" style="cursor: pointer;">
+                        <div class="vesitable-img">
+                            <img src="${displayImg}" class="img-fluid w-100 rounded-top" alt="${product}">
+                        </div>
+                        <div class="p-4 pb-0 rounded-bottom">
+                            <h4>${product}</h4>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
+                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                <p class="text-dark fs-5 fw-bold">${productInfo.price}</p>
+                                <span class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary">
+                                    <i class="fa fa-shopping-bag me-2 text-primary"></i> View Details
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             `;
             container.innerHTML += productHTML;
         });
@@ -669,15 +704,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!productInfo) return; // Bỏ qua sản phẩm không có dữ liệu hình ảnh
 
+        const displayImg = resolveAssetPathForView(productInfo.img);
+        const file = (productInfo.img || '').split('/').pop();
+        // Use rawPrice for URL param (numeric value), fallback to trying to parse price if rawPrice missing
+        const priceParam = productInfo.rawPrice || parseInt(String(productInfo.price).replace(/\D/g, '')) || 0;
+
         let productHTML = `
             <div class="col-lg-6 col-xl-4">
                 <div class="p-4 rounded bg-light">
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <img src="${productInfo.img}" class="img-fluid rounded-circle w-100" alt="${product}">
+                            <img src="${displayImg}" class="img-fluid rounded-circle w-100" alt="${product}">
                         </div>
                         <div class="col-6">
-                            <a href="shop-detail.html?name=${encodeURIComponent(product)}&img=${encodeURIComponent(productInfo.img)}&price=${encodeURIComponent(productInfo.price)}" class="h5">${product}</a>
+                            <a href="shop-detail.html?name=${encodeURIComponent(product)}&img=${encodeURIComponent(file)}&price=${encodeURIComponent(priceParam)}" class="h5">${product}</a>
                             <div class="d-flex my-3">
                                 <i class="fas fa-star text-primary"></i>
                                 <i class="fas fa-star text-primary"></i>
@@ -687,7 +727,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                             <h4 class="mb-3">${productInfo.price}</h4>
                             <p class="text-muted">Đã bán: ${count} lần</p>
-                            <a href="shop-detail.html?name=${encodeURIComponent(product)}&img=${encodeURIComponent(productInfo.img)}&price=${encodeURIComponent(productInfo.price)}" class="btn border border-secondary rounded-pill px-3 text-primary">
+                            <a href="shop-detail.html?name=${encodeURIComponent(product)}&img=${encodeURIComponent(file)}&price=${encodeURIComponent(priceParam)}" class="btn border border-secondary rounded-pill px-3 text-primary">
                                 <i class="fa fa-shopping-bag me-2 text-primary"></i> Xem chi tiết
                             </a>
                         </div>
